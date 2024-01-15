@@ -122,8 +122,10 @@ $(document).ready(function () {
                 const missile = new Missile(this.x + this.width / 2, this.y);
                 missile.isPlayerMissile = true;
                 this.canShoot = false; // Set to false after shooting --> unable player to shoot as often as he wants
+                
                 return missile;
             }
+            
             return null; // No missile is shot
         }
     }
@@ -313,6 +315,9 @@ $(document).ready(function () {
                     this.missiles.splice(i, 1); // Remove the missile
                     this.playerLives--;
 
+                    // Play the player hit by missile sound
+                    $("#playerHitSound")[0].play();
+
                     // Update the lives display
                     this.livesElement.textContent = this.playerLives;
 
@@ -353,6 +358,8 @@ $(document).ready(function () {
                 ) {
                     // Collision detected: player loses immediately
                     this.gameOver();
+                    // Play the player hit sound
+                    $("#playerDiesSound")[0].play();
                     return; // Stop updating after game over
                 }
             }
@@ -372,7 +379,11 @@ $(document).ready(function () {
                         missile.isPlayerMissile
                     ) {
                         // Collision detected: remove missile
-                         this.missiles = this.missiles.filter((m) => m !== missile);
+                        this.missiles = this.missiles.filter((m) => m !== missile);
+
+                        // Play the alien hit sound
+                        $("#alienHitSound")[0].play();
+                        this.missiles = this.missiles.filter((m) => m !== missile);
 
                         // Change alien image to 'smashed.png' immediately
                         alien.image.src = 'images/smashed.png';
@@ -430,6 +441,9 @@ $(document).ready(function () {
                         // Space key pressed, player shoots a missile if allowed (if no other missile on screen)
                         if (this.player.canShoot) {
                             this.playerMissile = this.player.shoot();
+
+                            // Play Player Shoot Sound
+                            $("#playerShootSound")[0].play();
                             if (this.playerMissile) {
                                 this.missiles.push(this.playerMissile);
                             }
